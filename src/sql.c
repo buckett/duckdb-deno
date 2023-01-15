@@ -79,6 +79,7 @@ bool duckffi_value_boolean(duckdb_result* result, uint32_t row, uint32_t column)
 bool duckffi_value_is_null(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_is_null(result, column, row); }
 uint32_t duckffi_value_date(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_date(result, column, row).days; }
 char* duckffi_value_string(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_varchar_internal(result, column, row); }
+char* duckffi_value_json(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_varchar(result, column, row); }
 uint32_t duckffi_value_time(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_time(result, column, row).micros / 1000; }
 uint32_t duckffi_value_interval_months(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_interval(result, column, row).months; }
 uint64_t duckffi_value_timestamp_ms(duckdb_result* result, uint32_t row, uint32_t column) { return duckdb_value_timestamp(result, column, row).micros / 1000; }

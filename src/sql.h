@@ -62,6 +62,7 @@ uint64_t duckffi_value_u64(duckdb_result* result, uint32_t row, uint32_t column)
 bool duckffi_value_boolean(duckdb_result* result, uint32_t row, uint32_t column);
 bool duckffi_value_is_null(duckdb_result* result, uint32_t row, uint32_t column);
 char* duckffi_value_string(duckdb_result* result, uint32_t row, uint32_t column);
+char* duckffi_value_json(duckdb_result* result, uint32_t row, uint32_t column);
 uint32_t duckffi_value_date(duckdb_result* result, uint32_t row, uint32_t column);
 uint32_t duckffi_value_time(duckdb_result* result, uint32_t row, uint32_t column);
 duckdb_blob* duckffi_value_blob(duckdb_result* result, uint32_t row, uint32_t column);

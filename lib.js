@@ -29,6 +29,8 @@ const devMode = Deno.env.get("DENO_DUCKDB_DEV");
 let options = { name: "duckdb" };
 if (devMode) {
   options.url = path;
+  // Disable the cache when in development
+  options.policy = "NONE"
 } else {
   options.urls = {
     darwin: {
@@ -124,6 +126,10 @@ const { symbols: duck } = await plugPrepare(options, {
     result: "pointer",
   },
   duckffi_value_string: {
+    parameters: ["pointer", "u32", "u32"],
+    result: "pointer",
+  },
+  duckffi_value_json: {
     parameters: ["pointer", "u32", "u32"],
     result: "pointer",
   },
@@ -346,6 +352,11 @@ const _tm = {
     return (row, column) =>
       getCString(duck.duckffi_value_string(r, row, column));
   },
+  [_t.json](r, _ltypes, _column) {
+    return (row, column) => {
+      getCString(duck.duckffi_value_json(r, row, column));
+    }
+  },
   [_t.date](r, _ltypes, _column) {
     return (row, column) =>
       24 * 60 * 60 * 1000 * duck.duckffi_value_date(r, row, column);
@@ -442,6 +453,10 @@ const _tms = {
       duck.duckffi_value_timestamp_ms_slow(r, row, column);
   },
   [_t.varchar](r, _ltypes, _column) {
+    return (row, column) =>
+      getCString(duck.duckffi_value_string_slow(r, row, column));
+  },
+  [_t.json](r, _ltypes, _column) {
     return (row, column) =>
       getCString(duck.duckffi_value_string_slow(r, row, column));
   },
@@ -646,6 +661,9 @@ const _trm = {
   [_t.enum](n, offset) {
     return _trm[_t.varchar](n, offset);
   },
+  [_t.json](n, offset) {
+    return _trm[_t.varchar](n, offset);
+  },
   [_t.time](n, offset) {
     return `if (type === 'string') { ${_trm[_t.varchar](n, offset)} } else { ${
       _trm[_t.timestamp](n, offset)
@@ -725,6 +743,9 @@ const _trmc = {
     return `(type === 'number')`;
   },
   [_t.varchar](n) {
+    return `(type === 'string')`;
+  },
+  [_t.json](n) {
     return `(type === 'string')`;
   },
   [_t.boolean](n) {
